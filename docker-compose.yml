@@ -1,0 +1,49 @@
+# Use root/root as user/password credentials
+version: "3.7"
+
+
+services:
+  cells:
+    build:
+      context: .
+      args:
+        version: "1.6.1"
+    restart: always
+    networks:
+      - back
+    volumes:
+      - "./static:/root/.config/pydio/cells/static/pydio"
+      - "./data:/root/.config/pydio/cells/data"
+    ports: ["8080:8080"]
+    environment:
+      FILE: "/root/.config/pydio/cells/data/INSTALLED"
+      EXTERNAL_URL: "http://localhost:8080"
+      INTERNAL_URL: "http://0.0.0.0:8080"
+      DB_CONNECTION_TYPE: "tcp"
+      DB_USER: pydio
+      DB_PASSWORD: pydio
+      DB_NAME: cells
+      DB_TCP_HOST: "db"
+      DB_TCP_PORT: "3306"
+      FRONTEND_LOGIN: "root"
+      FRONTEND_PASSWORD: "root"
+
+
+  db:
+    image: mysql:5.7
+    networks:
+      - back
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: pydio
+      MYSQL_PASSWORD: pydio
+      MYSQL_DATABASE: cells
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+networks:
+  back:
+    driver: bridge
