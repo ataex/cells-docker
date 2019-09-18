@@ -1,0 +1,3 @@
+Install Go 1.12 or later and run make to build Pydio Cells docker container.
+
+Edit installation parameters in docker-compose.yml
